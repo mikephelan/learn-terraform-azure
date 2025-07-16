@@ -1,21 +1,30 @@
 # Configure the Azure provider
 terraform {
+  required_version = ">= 1.1.0"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
       version = "~> 3.0.2"
     }
   }
-
-  required_version = ">= 1.1.0"
+  cloud {
+    organization = "mphelan-tutorial"
+    workspaces {
+      name = "learn-terraform-azure"
+    }
+  }
 }
 
 provider "azurerm" {
   features {}
+  subscription_id =  var.ARM_SUBSCRIPTION_ID
+  client_id       =  var.ARM_CLIENT_ID
+  client_secret   =  var.ARM_CLIENT_SECRET
+  tenant_id       =  var.ARM_TENANT_ID
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "myTFResourceGroup"
+  name     = var.resource_group_name
   location = "eastus2"
   tags = {
     Environment = "Terraform Getting Started"
@@ -29,4 +38,4 @@ resource "azurerm_virtual_network" "vnet" {
   address_space = ["10.0.0.0/16"]
   location = "eastus2"
   resource_group_name = azurerm_resource_group.rg.name
-}  
+}
